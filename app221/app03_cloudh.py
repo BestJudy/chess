@@ -96,6 +96,7 @@ def app20SaveGameData(h_house_i):
         print('error')
     return ret
 def app20SaveGame(id_game, data_game, role_cur=2):
+    if(id_game <= 0): return
     data_dictionary = {'h_id': 0, 
                     't_updated':0, 
                     'h_player1': 'bestjudyw@gmail.com',
