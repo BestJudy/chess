@@ -68,7 +68,7 @@ def app221GetGameId(h_player=''):
             role = 1
         if(JSON_object[0]['h_player2'] == h_player):
             role = 2
-        ret = (JSON_object[0]['h_id'], role)
+        ret = (int(JSON_object[0]['h_id']), role)
         
     except Exception:
         print('error')
