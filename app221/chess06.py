@@ -15,15 +15,15 @@ class app221_chess():
         self.state_oneline = 100    # offline
         pygame.init()
 
-        self.win = pygame.display.set_mode((800, 800))
+        self.win = pygame.display.set_mode((1000, 800))
 
         pygame.display.set_caption("Chess " + __version__)
 
         bg_color = pygame.Color('grey12')
         light_grey = (200,200,200)
         self.backround = pygame.image.load('./app221/chessboard.png')
-        self.win.blit(self.backround, (0, 0))
-
+        self.bk_side = pygame.image.load('./app221/chess_side.png')
+        
         self.lst_image_names = ['', './app221/bR.png', './app221/bN.png', './app221/bB.png', './app221/bQ.png',
                     './app221/bK.png', './app221/bP.png',
                     './app221/wR.png', './app221/wN.png', './app221/wB.png', './app221/wQ.png',
@@ -42,6 +42,11 @@ class app221_chess():
 
         self.lst_image_index = np.array(self.default_index)
         self.turn = 1
+        self.player1 = pygame.image.load(self.lst_image_names[4])
+        self.player2 = pygame.image.load(self.lst_image_names[10])
+        pygame.font.init()
+        game_font = pygame.font.SysFont('Comic Sans MS', 30)
+        self.p_turn = game_font.render('My Turn', False, (0, 255, 0))
         pass
     def run(self):
         state = 0
@@ -63,9 +68,10 @@ class app221_chess():
                         x, y = pygame.mouse.get_pos()
                         #print(x, y)
                         col, row = self.get_chess_position(x, y)
-                        col_1, row_1 = self.get_chess_position(x, y)
                         #print(col, row)
-                        if state == 0:
+                        if(col >= 8 or row >= 8):
+                            pass
+                        elif state == 0:
                             b_legal = False
                             a_chess = self.lst_image_index[row][col]
                             if(self.n_role == 1 ):
@@ -87,15 +93,15 @@ class app221_chess():
                 elif event.type == pygame.MOUSEBUTTONUP:
                         x, y = pygame.mouse.get_pos()
                         col, row = self.get_chess_position(x, y)
-                        if state == 1:
+                        if(col >= 8 or row >= 8):
+                            pass
+                        elif state == 1:
                             state = 2
                             chess_selected = self.lst_image_index[row_selected][col_selected]
                             self.lst_image_index[row_selected][col_selected] = 0
                         elif state == 4:
                             state = 5
-                            #print(chess_selected )
                             self.lst_image_index[row][col] = chess_selected
-
                             #if self.position_okay[row][col] == 1:
                                 #self.lst_image_index[row][col] = chess_selected
                             #else: 
@@ -126,6 +132,7 @@ class app221_chess():
                     self.id_game, self.n_role = app221GetGameId(user_name)
                     self.state_oneline = 200    # online
 
+            self.display_side()
             self.display_chess()
             if state == 1 or state == 2 or state == 3:
                 pygame.draw.circle(self.win, RED , (col_selected *100+50, row_selected * 100+50), 20)
@@ -235,9 +242,16 @@ class app221_chess():
         if piece == 12:
             pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-1) * 100+50), 20, 3)
             pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-2) * 100+50), 20, 3)
-
-    def display_chess(self):
+    def display_side(self):
         self.win.blit(self.backround, (0, 0))
+        self.win.blit(self.bk_side, (790, 0))       
+        if(self.turn == 1): 
+            self.win.blit(self.player1, (850+10, 10))   
+            self.win.blit(self.p_turn, (850+10, 100+10)) 
+        elif(self.turn == 2):     
+            self.win.blit(self.player2, (850+10, 700+10))
+            self.win.blit(self.p_turn, (850+10, 650+10)) 
+    def display_chess(self):
         for row in range(8):
             for col in range(len(self.lst_image_index[row])):
                 if(self.lst_image_index[row][col] > 0): 
