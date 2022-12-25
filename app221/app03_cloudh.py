@@ -29,6 +29,7 @@ def app221Login(username, password=''):
 #print( 'app221Login', ret )
 def app221GetGameData(id_game, h_player=''):
     ret_arr = np.array([0])
+    turn_now = 1
     # Making a GET request
     urlData = 'http://cloudh.org/house_app/app221/h_app_list_all.php?'+'&query_h_id='+str(id_game)+'&h_player1='+h_player
 
@@ -42,9 +43,10 @@ def app221GetGameData(id_game, h_player=''):
         ret = ret.replace('[', '').replace(']', '')
         ret_arr = np.fromstring(ret, dtype=int, sep=' ')
         ret_arr.shape = (8, 8)
+        turn_now = int(JSON_object[0]['h_turn2'])
     except Exception:
         print('error')
-    return ret_arr
+    return (ret_arr, turn_now)
 #arr_ret = app221GetGameData('lunawyh@gmail.com')
 #arr_ret = app221GetGameData(4)
 #print(arr_ret)
@@ -93,7 +95,7 @@ def app20SaveGameData(h_house_i):
     except Exception:
         print('error')
     return ret
-def app20SaveGame(id_game, data_game):
+def app20SaveGame(id_game, data_game, role_cur=2):
     data_dictionary = {'h_id': 0, 
                     't_updated':0, 
                     'h_player1': 'bestjudyw@gmail.com',
@@ -106,6 +108,8 @@ def app20SaveGame(id_game, data_game):
     data_dictionary['h_id'] = id_game
     data_dictionary['t_updated'] = time.time()
     data_dictionary['h_data1'] = data_game
+    data_dictionary['h_turn1'] = role_cur
+    data_dictionary['h_turn2'] = 3 - role_cur
     data_jsonString = json.dumps(data_dictionary)
     post_dictionary = {'query_h_id':200, 'h_app_item':'data'}
     post_dictionary['h_app_item'] = data_jsonString

@@ -1,11 +1,8 @@
-from unicodedata import east_asian_width
-from xml.dom.minidom import Childless
-from cv2 import circle
 import pygame
 import numpy as np
 from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData
 
-__version__ = '0.0.6'
+__version__ = '0.0.8'
 
 class app221_chess():
     def __init__(self, _id_game, _n_role):
@@ -38,6 +35,7 @@ class app221_chess():
             ]
 
         self.lst_image_index = np.array(self.default_index)
+        self.turn = 0
         pass
     def run(self):
         state = 0
@@ -47,7 +45,6 @@ class app221_chess():
 
         RED =       (255,   0,   0)
         BLUE = (0, 0, 255)
-        
         run = True
         while run: 
             
@@ -74,8 +71,11 @@ class app221_chess():
                                 state = 1
                                 col_selected, row_selected= col, row
                         elif state == 3:
-                            state = 4
-                            col_selected, row_selected= col, row
+                            if(self.n_role == self.turn):
+                                state = 4
+                                col_selected, row_selected= col, row
+                            else:
+                                state = 0
                         #lst_image_index[row][col] = -lst_image_index[row][col] 
                 elif event.type == pygame.MOUSEBUTTONUP:
                         x, y = pygame.mouse.get_pos()
@@ -95,7 +95,7 @@ class app221_chess():
                         elif state == 5:
                             a_str = ' '.join(map(str,(self.lst_image_index)))
                             # print(b_str)
-                            app20SaveGame(self.id_game, a_str )
+                            app20SaveGame(self.id_game, a_str, self.n_role )
                             state= 0
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # right
                     state = 0
@@ -117,7 +117,19 @@ class app221_chess():
                 pygame.draw.circle(self.win, BLUE , (col_selected *100+50, row_selected * 100+50), 20)
             
             if state == 0:
-                self.lst_image_index = app221GetGameData(self.id_game)
+                self.lst_image_index, self.turn = app221GetGameData(self.id_game)
+                s_title = 'Chess ' +  __version__ + ', I use '
+                if(self.n_role == 1):
+                    s_title += 'Black piece'
+                elif(self.n_role == 2):
+                    s_title += 'White piece'
+                if(self.turn == self.n_role):
+                    s_title += ", my turn"
+                elif(self.turn == 1):
+                    s_title += ", Black's turn"
+                elif(self.turn == 2):
+                    s_title += ", White's turn"
+                pygame.display.set_caption(s_title)
             pygame.display.update()
             
 
@@ -195,7 +207,7 @@ class app221_chess():
         row = y//100
         return col, row
 
-# now starting game        
+# now starting game, lunawyh: 2, bestjudyw: 1
 user_name = 'lunawyh@gmail.com'
 user_password = 'zzy403'
 ret =  app221Login(user_name, user_password)
