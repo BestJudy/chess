@@ -1,3 +1,8 @@
+############################################
+#       chess06.py
+#
+#   https://github.com/BestJudy/chess
+############################################
 import pygame
 import numpy as np
 from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData
@@ -7,6 +12,7 @@ __version__ = '0.0.8'
 class app221_chess():
     def __init__(self, _id_game, _n_role):
         self.id_game, self.n_role = _id_game, _n_role
+        self.state_oneline = 100    # offline
         pygame.init()
 
         self.win = pygame.display.set_mode((800, 800))
@@ -35,7 +41,7 @@ class app221_chess():
             ]
 
         self.lst_image_index = np.array(self.default_index)
-        self.turn = 0
+        self.turn = 1
         pass
     def run(self):
         state = 0
@@ -97,13 +103,20 @@ class app221_chess():
                             # print(b_str)
                             app20SaveGame(self.id_game, a_str, self.n_role )
                             state= 0
+                            if(self.state_oneline == 100):
+                                self.turn = self.n_role = 3 - self.n_role
+                                pass
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # right
                     state = 0
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                     
                     self.lst_image_index = np.array(self.default_index)
                     a_str = ' '.join(map(str,(self.lst_image_index)))
                     app20SaveGame(self.id_game, a_str )
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_l:
+                    user_name = 'bestjudyw@gmail.com'
+                    self.id_game, self.n_role = app221GetGameId(user_name)
+                    self.state_oneline = 200    # online
 
             self.display_chess()
             if state == 1 or state == 2 or state == 3:
@@ -117,7 +130,8 @@ class app221_chess():
                 pygame.draw.circle(self.win, BLUE , (col_selected *100+50, row_selected * 100+50), 20)
             
             if state == 0:
-                self.lst_image_index, self.turn = app221GetGameData(self.id_game)
+                if(self.id_game > 0):
+                    self.lst_image_index, self.turn = app221GetGameData(self.id_game)
                 s_title = 'Chess ' +  __version__ + ', I use '
                 if(self.n_role == 1):
                     s_title += 'Black piece'
@@ -207,11 +221,13 @@ class app221_chess():
         row = y//100
         return col, row
 
+app221 = app221_chess(0, 1)
+    
+app221.run()
+'''
 # now starting game, lunawyh: 2, bestjudyw: 1
 user_name = 'lunawyh@gmail.com'
-user_password = 'hi'
+user_password = ''
 ret =  app221Login(user_name, user_password)
-if(ret == 200):
-    id_game, n_role = app221GetGameId(user_name)
-    app221 = app221_chess(id_game, n_role)
-    app221.run()
+
+'''
