@@ -23,11 +23,7 @@ class app221_chess():
         bg_color = pygame.Color('grey12')
         light_grey = (200,200,200)
         self.backround = pygame.image.load('./app221/chessboard.png')
-        #self.bk_side = pygame.image.load('./app221/another_side_image001.png')
-        #self.bk_side = pygame.image.load(random.randrange('./app221/another_side_image001.png', 'NEW_PANEL_SIDE1.PNG', 'chess_side.png'))
         test_list = ['./app221/another_side_image001.png', './app221/NEW_PANEL_SIDE1.png', './app221/chess_side.png']
-
-        #self.bk_side = pygame.image.load(random.choice(test_list))
         self.bk_side = pygame.image.load(test_list[random.randint(0, 2)])
         
         self.lst_image_names = ['', './app221/bR.png', './app221/bN.png', './app221/bB.png', './app221/bQ.png',
