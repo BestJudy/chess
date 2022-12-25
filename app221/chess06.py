@@ -129,50 +129,54 @@ class app221_chess():
         # white rook 
         if piece == 7:
             for i in range(1, 8):
-                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected) * 100+50), 20)
+                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected) * 100+50), 20, 3)
         # white knight
         if piece == 8:
-            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected-2) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected-2) *100+50, (row_selected-1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected-2) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+2) *100+50, (row_selected-1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected-2) *100+50, (row_selected+1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+2) *100+50, (row_selected+1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected+2) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected+2) * 100+50), 20)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected-2) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-2) *100+50, (row_selected-1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected-2) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+2) *100+50, (row_selected-1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-2) *100+50, (row_selected+1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+2) *100+50, (row_selected+1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected+2) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected+2) * 100+50), 20, 3)
         # white bishop
         if piece == 9:
             #pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected) * 100+50), 20)
             for i in range(1, 8):
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected-i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected-i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected+i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected+i) * 100+50), 20)
+                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected-i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected-i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected+i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected+i) * 100+50), 20, 3)
         # white queen
         if piece == 10:
             #pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected) * 100+50), 20)
             for i in range(1, 8):
-                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected-i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected-i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected+i) * 100+50), 20)
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected+i) * 100+50), 20)
+                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected-i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected-i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected+i) * 100+50), 20, 3)
+                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected+i) * 100+50), 20, 3)
         # white king
         if piece == 11:
-            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected-1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected-1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected+1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+1) * 100+50), 20)
-            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected+1) * 100+50), 20)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected-1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected-1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected+1) *100+50, (row_selected+1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected+1) * 100+50), 20, 3)
+        # white pawn
+        if piece == 12:
+            pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-1) * 100+50), 20, 3)
+            pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-2) * 100+50), 20, 3)
 
     def display_chess(self):
         self.win.blit(self.backround, (0, 0))
