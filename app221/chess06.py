@@ -209,7 +209,7 @@ class app221_chess():
 
 # now starting game, lunawyh: 2, bestjudyw: 1
 user_name = 'lunawyh@gmail.com'
-user_password = 'zzy403'
+user_password = 'hi'
 ret =  app221Login(user_name, user_password)
 if(ret == 200):
     id_game, n_role = app221GetGameId(user_name)
