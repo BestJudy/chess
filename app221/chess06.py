@@ -63,6 +63,7 @@ class app221_chess():
                         x, y = pygame.mouse.get_pos()
                         #print(x, y)
                         col, row = self.get_chess_position(x, y)
+                        col_1, row_1 = self.get_chess_position(x, y)
                         #print(col, row)
                         if state == 0:
                             b_legal = False
@@ -92,7 +93,14 @@ class app221_chess():
                             self.lst_image_index[row_selected][col_selected] = 0
                         elif state == 4:
                             state = 5
+                            #print(chess_selected )
                             self.lst_image_index[row][col] = chess_selected
+
+                            #if self.position_okay[row][col] == 1:
+                                #self.lst_image_index[row][col] = chess_selected
+                            #else: 
+                                #state=0
+                                #self.lst_image_index[row_selected][col_selected] = chess_selected
                         #lst_image_index[row][col] = lst_image_index[row][col] 
                 elif event.type == pygame.MOUSEMOTION:
                         x, y = pygame.mouse.get_pos()
@@ -149,16 +157,40 @@ class app221_chess():
 
         pygame.quit()
         pass
-
+    def piece_draw_hint(self, col, row):
+        WHITE = (255,255,255)
+        pygame.draw.circle(self.win, WHITE , (col *100+50, row * 100+50), 20, 3)
+        
+        self.position_okay[row][col] = 1
+        #print(self.position_okay)
     def chess_rule(self, piece, col_selected, row_selected):
+        self.position_okay = [ [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0],
+                            [0, 0, 0, 0, 0, 0, 0, 0]
+            ]
+        #self.lst_image_index
         WHITE = (255,255,255)
         # white rook 
         if piece == 7:
-            for i in range(1, 8):
-                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-i) * 100+50), 20, 3)
-                pygame.draw.circle(self.win, WHITE , ((col_selected-i) *100+50, (row_selected) * 100+50), 20, 3)
-                pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected+i) * 100+50), 20, 3)
-                pygame.draw.circle(self.win, WHITE , ((col_selected+i) *100+50, (row_selected) * 100+50), 20, 3)
+            up_number_range_col = row_selected+1
+            right_number_range_row = col_selected+1
+            down_number_range_col = 7 - row_selected+1
+            left_number_range_row = 7 - col_selected+1
+
+            for i in range(1, up_number_range_col):
+                #pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-i) * 100+50), 20, 3)
+                self.piece_draw_hint(col_selected, row_selected-i)
+            for i in range(1, right_number_range_row):
+                self.piece_draw_hint(col_selected-i, row_selected)
+            for i in range (1, left_number_range_row):
+                self.piece_draw_hint(col_selected+i, row_selected)
+            for i in range (1, down_number_range_col):
+                self.piece_draw_hint(col_selected, row_selected+i)
         # white knight
         if piece == 8:
             pygame.draw.circle(self.win, WHITE , ((col_selected-1) *100+50, (row_selected-2) * 100+50), 20, 3)
