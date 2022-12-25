@@ -58,8 +58,17 @@ class app221_chess():
                         col, row = self.get_chess_position(x, y)
                         #print(col, row)
                         if state == 0:
-                            state = 1
-                            col_selected, row_selected= col, row
+                            b_legal = False
+                            a_chess = self.lst_image_index[row][col]
+                            if(self.n_role == 1 ):
+                                if(a_chess >= 1 and a_chess <= 6):
+                                    b_legal = True
+                            if(self.n_role == 2 ):
+                                if(a_chess >= 7 and a_chess <= 12):
+                                    b_legal = True
+                            if(b_legal):
+                                state = 1
+                                col_selected, row_selected= col, row
                         elif state == 3:
                             state = 4
                             col_selected, row_selected= col, row
