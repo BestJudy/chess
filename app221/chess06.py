@@ -6,12 +6,12 @@
 import pygame
 import numpy as np
 import random
-from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData
+from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20CreateGame
 
 __version__ = '0.0.8'
 
 class app221_chess():
-    def __init__(self, _id_game, _n_role):
+    def __init__(self, _id_game, _n_role, _name):
         self.id_game, self.n_role = _id_game, _n_role
         self.state_oneline = 100    # offline
         pygame.init()
@@ -46,9 +46,11 @@ class app221_chess():
         self.turn = 1
         self.player1 = pygame.image.load(self.lst_image_names[4])
         self.player2 = pygame.image.load(self.lst_image_names[10])
+        self.player1_name = _name
+        self.player2_name = _name
         pygame.font.init()
-        game_font = pygame.font.SysFont('Comic Sans MS', 30)
-        self.p_turn = game_font.render('My Turn', False, (255, 255, 255))
+        self.game_font = pygame.font.SysFont('Comic Sans MS', 30)
+        
         pass
     def run(self):
         state = 0
@@ -72,7 +74,22 @@ class app221_chess():
                         col, row = self.get_chess_position(x, y)
                         #print(col, row)
                         if(col >= 8 or row >= 8):
-                            pass
+                            if(self.state_oneline == 200):  # will select black or white seat
+                                #print('online select', col, row)
+                                if(row == 1 and (col == 8 or col == 9)):
+                                    self.id_game, self.n_role, self.player2_name = app221GetGameId(self.player1_name, 1)
+                                    #print('  app221GetGameId 1', self.player1_name, self.id_game)
+                                    if(self.id_game > 0):
+                                        self.state_oneline = 300
+                                    else:
+                                        app20CreateGame(self.player1_name, 1)
+                                elif(row == 6 and (col == 8 or col == 9)):
+                                    self.id_game, self.n_role, self.player1_name = app221GetGameId(self.player2_name, 2)
+                                    #print('  app221GetGameId 2', self.player2_name, self.id_game)
+                                    if(self.id_game > 0):
+                                        self.state_oneline = 300
+                                    else:
+                                        app20CreateGame(self.player2_name, 2)
                         elif state == 0:
                             b_legal = False
                             a_chess = self.lst_image_index[row][col]
@@ -130,9 +147,9 @@ class app221_chess():
                     a_str = ' '.join(map(str,(self.lst_image_index)))
                     app20SaveGame(self.id_game, a_str )
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                    user_name = 'bestjudyw@gmail.com'
-                    self.id_game, self.n_role = app221GetGameId(user_name)
+                    
                     self.state_oneline = 200    # online
+                    self.n_role, self.turn = 0, 0
 
             self.display_side()
             self.display_chess()
@@ -148,7 +165,9 @@ class app221_chess():
             
             if state == 0:
                 if(self.id_game > 0):
-                    self.lst_image_index, self.turn = app221GetGameData(self.id_game)
+                    ret_arr, self.turn = app221GetGameData(self.id_game)
+                    if(ret_arr.shape == (8,8)):
+                        self.lst_image_index = ret_arr
                 s_title = 'Chess ' +  __version__ + ', I use '
                 if(self.n_role == 1):
                     s_title += 'Black piece'
@@ -246,13 +265,36 @@ class app221_chess():
             pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected-2) * 100+50), 20, 3)
     def display_side(self):
         self.win.blit(self.backround, (0, 0))
-        self.win.blit(self.bk_side, (790, 0))       
-        if(self.turn == 1): 
-            self.win.blit(self.player1, (850+10, 10))   
-            self.win.blit(self.p_turn, (850+10, 100+10)) 
-        elif(self.turn == 2):     
-            self.win.blit(self.player2, (850+10, 700+10))
-            self.win.blit(self.p_turn, (850+10, 650+10)) 
+        self.win.blit(self.bk_side, (790, 0))  
+        if(self.state_oneline == 100 or self.state_oneline == 300):     
+            if(self.turn == 1): 
+                self.win.blit(self.player1, (850+10, 50+10))   
+                g_msg2 = self.game_font.render('My Turn', False, (255, 255, 255))
+                self.win.blit(g_msg2, (850+10, 150+10)) 
+            elif(self.turn == 2):     
+                self.win.blit(self.player2, (850+10, 650+10))
+                g_msg2 = self.game_font.render('My Turn', False, (255, 255, 255))
+                self.win.blit(g_msg2, (850+10, 600+10))                 
+            
+        elif(self.state_oneline == 200):
+            self.win.blit(self.player1, (850+10, 50+10))
+            g_msg2 = self.game_font.render('I select black', False, (255, 0, 0))
+            self.win.blit(g_msg2, (820+10, 150+10)) 
+            self.win.blit(self.player2, (850+10, 650+10))
+            g_msg2 = self.game_font.render('I select white', False, (255, 0, 0))
+            self.win.blit(g_msg2, (820+10, 600+10))
+            
+        if(self.state_oneline <= 100):
+            g_msg3 = self.game_font.render('Offline', False, (255, 255, 0))
+        else:
+            g_msg3 = self.game_font.render('Online', False, (255, 255, 0))
+        if(self.state_oneline != 200):
+            g_msg1 = self.game_font.render(self.player1_name.split('@')[0], False, (255, 255, 255))
+            self.win.blit(g_msg1, (850+10, 10+10))
+            g_msg1 = self.game_font.render(self.player2_name.split('@')[0], False, (255, 255, 255))
+            self.win.blit(g_msg1, (850+10, 750+10))
+            
+        self.win.blit(g_msg3, (850+10, 400+10)) 
     def display_chess(self):
         for row in range(8):
             for col in range(len(self.lst_image_index[row])):
@@ -269,7 +311,7 @@ class app221_chess():
         row = y//100
         return col, row
 
-app221 = app221_chess(0, 1)
+app221 = app221_chess(0, 1, 'lunawyh@gmail.com')
     
 app221.run()
 '''
