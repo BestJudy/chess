@@ -105,8 +105,9 @@ class app221_chess():
                                 col_selected, row_selected= col, row
                         elif state == 3:
                             if(self.n_role == self.turn):
-                                state = 4
-                                col_selected, row_selected= col, row
+                                if self.position_okay[row][col] == 1:
+                                    state = 4
+                                    col_selected, row_selected= col, row
                             else:
                                 state = 0
                         #lst_image_index[row][col] = -lst_image_index[row][col] 
