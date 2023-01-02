@@ -156,8 +156,9 @@ class app221_chess():
                                 self.turn = self.n_role = 3 - self.n_role
                                 pass
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # right
-                    self.lst_image_index[row_selected][col_selected] = chess_selected
-                    state = 0
+                    if(state >= 1):     # cancel all states, restoring to the intializing state
+                        self.lst_image_index[row_selected][col_selected] = chess_selected
+                        state = 0
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                     
                     self.lst_image_index = np.array(self.default_index)
