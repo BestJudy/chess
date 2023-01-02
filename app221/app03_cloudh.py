@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 # 			app03_cloudh.py
 #
-#   refer to: https://github.com/lincolnloop/python-qrcode
+#   https://github.com/BestJudy/chess
 #
 import json
 import numpy as np

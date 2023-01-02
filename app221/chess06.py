@@ -7,6 +7,7 @@ import pygame
 import numpy as np
 import random
 from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20CreateGame
+from app04_input import chess_login
 
 __version__ = '0.0.8'
 
@@ -378,13 +379,9 @@ class app221_chess():
         row = y//100
         return col, row
 
-app221 = app221_chess(0, 1, 'lunawyh@gmail.com')
+app221 = app221_chess(0, 1, chess_login())
     
 app221.run()
 '''
-# now starting game, lunawyh: 2, bestjudyw: 1
-user_name = 'lunawyh@gmail.com'
-user_password = ''
-ret =  app221Login(user_name, user_password)
-
+END OF THE FILE
 '''
