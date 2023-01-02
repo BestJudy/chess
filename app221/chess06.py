@@ -56,6 +56,7 @@ class app221_chess():
     def run(self):
         state = 0
         col_selected, row_selected= 0, 0
+        col_target, row_target= 0, 0
         chess_selected = 0
         x, y = 0, 0
 
@@ -105,9 +106,16 @@ class app221_chess():
                                 col_selected, row_selected= col, row
                         elif state == 3:
                             if(self.n_role == self.turn):
-                                if self.position_okay[row][col] == 1:
+                                b_couterpart = True
+                                if(chess_selected >= 1 and chess_selected <= 6 and 
+                                    self.lst_image_index[row][col] >= 1 and self.lst_image_index[row][col] <= 6):
+                                    b_couterpart = False
+                                if(chess_selected >= 7 and chess_selected <= 12 and 
+                                    self.lst_image_index[row][col] >= 7 and self.lst_image_index[row][col] <= 12):
+                                    b_couterpart = False    
+                                if( (self.position_okay[row][col] == 1) and b_couterpart):
                                     state = 4
-                                    col_selected, row_selected= col, row
+                                    col_target, row_target= col, row
                             else:
                                 state = 0
                         #lst_image_index[row][col] = -lst_image_index[row][col] 
@@ -143,6 +151,7 @@ class app221_chess():
                                 self.turn = self.n_role = 3 - self.n_role
                                 pass
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # right
+                    self.lst_image_index[row_selected][col_selected] = chess_selected
                     state = 0
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
                     
@@ -167,7 +176,7 @@ class app221_chess():
                     bQ= pygame.image.load(self.lst_image_names[chess_selected])
                     self.win.blit(bQ, (x-50, y-50))
             if state == 4:
-                pygame.draw.circle(self.win, BLUE , (col_selected *100+50, row_selected * 100+50), 20)
+                pygame.draw.circle(self.win, BLUE , (col_target *100+50, row_target * 100+50), 20)
             
             if state == 0:
                 if(self.id_game > 0):
