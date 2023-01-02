@@ -92,6 +92,11 @@ class app221_chess():
                                         self.state_oneline = 300
                                     else:
                                         app20CreateGame(self.player2_name, 2)
+                            elif(self.state_oneline == 100):
+                                if(row == 4 and (col == 8 or col == 9)):
+                                    # offline or online
+                                    self.state_oneline = 200    # online
+                                    self.n_role, self.turn = 0, 0
                         elif state == 0:
                             b_legal = False
                             a_chess = self.lst_image_index[row][col]
