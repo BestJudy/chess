@@ -87,10 +87,11 @@ def app20SaveGameData(h_house_i, _data_url):
         req =  request.Request(_data_url, data=data_in) # this will make the method "POST"
         webURL = request.urlopen(req)
         data_out = webURL.read()
-        #print(data_out)
+        print(data_out)
         encoding = webURL.info().get_content_charset('utf-8')
         JSON_object = json.loads(data_out.decode(encoding))
-        #print('app20SaveGameData', JSON_object)
+        print('app20SaveGameData', JSON_object)
+        return 200, JSON_object
     except HTTPError as e:
         # do something
         print('Error code: ', e.code)
@@ -99,7 +100,7 @@ def app20SaveGameData(h_house_i, _data_url):
         print('Reason: ', e.reason)
     except Exception:
         print('error')
-    return ret
+    return ret, ""
 def app20SaveGame(id_game, data_game, role_cur=2):
     if(id_game <= 0): return
     data_dictionary = {'h_id': 0, 
@@ -147,3 +148,51 @@ def app20CreateGame(p_name, role_cur=2):
     data_url = 'http://cloudh.org/house_app/app221/h_app_man_player.php'
     app20SaveGameData(post_dictionary, data_url)
     pass
+def app20SetUser(p_name, role_cur=2, state_cur=0):
+    #print('  app20CreateGame', p_name, role_cur)
+    data_dictionary = {'h_id': 0, 
+                    't_updated':0, 
+                    'h_name': '',
+                    'h_role': 0,
+                    'h_state': 0,
+                    'h_room': 0,
+                    'h_note': 'smart'
+                    }
+    data_dictionary['h_id'] = 0
+    data_dictionary['t_updated'] = time.time()
+    data_dictionary['h_name'] = p_name
+    data_dictionary['h_role'] = role_cur
+    data_dictionary['h_state'] = state_cur
+    data_jsonString = json.dumps(data_dictionary)
+    post_dictionary = {'query_h_id':200, 'h_app_item':'data'}
+    post_dictionary['h_app_item'] = data_jsonString
+    data_url = 'http://cloudh.org/house_app/app221/h_app_man_user.php'
+    ret, ret_json = app20SaveGameData(post_dictionary, data_url)
+    if(ret == 200):
+        return ret_json[0]['h_id']
+    else:
+        return 0
+def app20getPartner(id_user, role_cur=2, n_ignore=0):
+    #print('  app20CreateGame', p_name, role_cur)
+    data_dictionary = {'h_id': 0, 
+                    't_updated':0, 
+                    'h_name': '',
+                    'h_role': 0,
+                    'h_state': 0,
+                    'h_room': 0,
+                    'h_note': 'smart'
+                    }
+    data_dictionary['h_id'] = id_user
+    data_dictionary['t_updated'] = time.time()
+    data_dictionary['h_name'] = 'not set'
+    data_dictionary['h_role'] = role_cur
+    data_dictionary['h_state'] = n_ignore
+    data_jsonString = json.dumps(data_dictionary)
+    post_dictionary = {'query_h_id':200, 'h_app_item':'data'}
+    post_dictionary['h_app_item'] = data_jsonString
+    data_url = 'http://cloudh.org/house_app/app221/h_app_man_user.php'
+    ret, ret_json = app20SaveGameData(post_dictionary, data_url)
+    if(ret == 200):
+        return ret_json[0]['h_room'], ret_json[0]['h_name']
+    else:
+        return 0, ''

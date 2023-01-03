@@ -6,14 +6,14 @@
 import pygame
 import numpy as np
 import random
-from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20CreateGame
+from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20SetUser, app20getPartner
 from app04_input import chess_login
 
 __version__ = '0.0.8'
 
 class app221_chess():
     def __init__(self, _id_game, _n_role, _name):
-        self.id_game, self.n_role = _id_game, _n_role
+        self.id_room, self.player0_role = _id_game, _n_role
         self.state_oneline = 100    # offline
         pygame.init()
 
@@ -46,8 +46,10 @@ class app221_chess():
 
         self.lst_image_index = np.array(self.default_index)
         self.turn = 1
-        self.player1 = pygame.image.load(self.lst_image_names[4])
-        self.player2 = pygame.image.load(self.lst_image_names[10])
+        self.player1 = pygame.image.load(self.lst_image_names[5])
+        self.player2 = pygame.image.load(self.lst_image_names[11])
+        self.player0_id = 0
+        self.player0_ignore = 0
         self.player0_name = _name
         self.player1_name = _name
         self.player2_name = _name
@@ -81,38 +83,34 @@ class app221_chess():
                             if(self.state_oneline == 200):  # will select black or white seat
                                 #print('online select', col, row)
                                 if(row == 1 and (col == 8 or col == 9)):
-                                    self.id_game, self.n_role, self.player2_name = app221GetGameId(self.player1_name, 1)
-                                    #print('  app221GetGameId 1', self.player1_name, self.id_game)
-                                    if(self.id_game > 0):
-                                        self.state_oneline = 300
-                                    else:
-                                        app20CreateGame(self.player1_name, 1)
+                                    self.player0_role = 1
+                                    self.player0_id = app20SetUser(self.player1_name, 1, 200)
+                                    self.state_oneline = 250
+                                    
                                 elif(row == 6 and (col == 8 or col == 9)):
-                                    self.id_game, self.n_role, self.player1_name = app221GetGameId(self.player2_name, 2)
-                                    #print('  app221GetGameId 2', self.player2_name, self.id_game)
-                                    if(self.id_game > 0):
-                                        self.state_oneline = 300
-                                    else:
-                                        app20CreateGame(self.player2_name, 2)
+                                    self.player0_role = 2
+                                    self.player0_id = app20SetUser(self.player2_name, 2, 200)
+                                    self.state_oneline = 250
+                                    
                             elif(self.state_oneline == 100):
                                 if(row == 4 and (col == 8 or col == 9)):
                                     # offline or online
                                     self.state_oneline = 200    # online
-                                    self.n_role, self.turn = 0, 0
+                                    self.player0_role, self.turn = 0, 0
                         elif state == 0:
                             b_legal = False
                             a_chess = self.lst_image_index[row][col]
-                            if(self.n_role == 1 ):
+                            if(self.player0_role == 1 ):
                                 if(a_chess >= 1 and a_chess <= 6):
                                     b_legal = True
-                            if(self.n_role == 2 ):
+                            if(self.player0_role == 2 ):
                                 if(a_chess >= 7 and a_chess <= 12):
                                     b_legal = True
                             if(b_legal):
                                 state = 1
                                 col_selected, row_selected= col, row
                         elif state == 3:
-                            if(self.n_role == self.turn):
+                            if(self.player0_role == self.turn):
                                 b_couterpart = True
                                 if(chess_selected >= 1 and chess_selected <= 6 and 
                                     self.lst_image_index[row][col] >= 1 and self.lst_image_index[row][col] <= 6):
@@ -152,10 +150,10 @@ class app221_chess():
                         elif state == 5:
                             a_str = ' '.join(map(str,(self.lst_image_index)))
                             # print(b_str)
-                            app20SaveGame(self.id_game, a_str, self.n_role )
+                            app20SaveGame(self.id_room, a_str, self.player0_role )
                             state= 0
                             if(self.state_oneline == 100):
-                                self.turn = self.n_role = 3 - self.n_role
+                                self.turn = self.player0_role = 3 - self.player0_role
                                 pass
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # right
                     if(state >= 1):     # cancel all states, restoring to the intializing state
@@ -165,14 +163,22 @@ class app221_chess():
                     
                     self.lst_image_index = np.array(self.default_index)
                     a_str = ' '.join(map(str,(self.lst_image_index)))
-                    app20SaveGame(self.id_game, a_str )
+                    app20SaveGame(self.id_room, a_str )
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_l:
                     
                     self.state_oneline = 200    # online
-                    self.n_role, self.turn = 0, 0
+                    self.player0_role, self.turn = 0, 0
 
             self.display_side()
             self.display_chess()
+            if(self.state_oneline == 250):
+                self.id_room, parter_name = app20getPartner(self.player0_id, self.player0_role, self.player0_ignore)
+                if(self.id_room > 0):
+                    self.state_oneline = 300
+                    if(self.player0_role == 1):
+                        self.player2_name = parter_name
+                    else:
+                        self.player1_name = parter_name
             
             if state == 2 or state == 3:
                 self.display_rule()
@@ -187,16 +193,16 @@ class app221_chess():
                 pygame.draw.circle(self.win, BLUE , (col_target *100+50, row_target * 100+50), 20)
             
             if state == 0:
-                if(self.id_game > 0):
-                    ret_arr, self.turn = app221GetGameData(self.id_game)
+                if(self.id_room > 0):
+                    ret_arr, self.turn = app221GetGameData(self.id_room)
                     if(ret_arr.shape == (8,8)):
                         self.lst_image_index = ret_arr
                 s_title = 'Chess ' +  __version__ + ', I use '
-                if(self.n_role == 1):
+                if(self.player0_role == 1):
                     s_title += 'Black piece'
-                elif(self.n_role == 2):
+                elif(self.player0_role == 2):
                     s_title += 'White piece'
-                if(self.turn == self.n_role):
+                if(self.turn == self.player0_role):
                     s_title += ", my turn"
                 elif(self.turn == 1):
                     s_title += ", Black's turn"
@@ -360,7 +366,7 @@ class app221_chess():
         self.win.blit(g_msg3, (850+10, 430+10)) 
 
         if(self.state_oneline >= 300):
-            g_msg6 = self.game_font.render('room ' + str(self.id_game), False, (255, 255, 0))
+            g_msg6 = self.game_font.render('room ' + str(self.id_room), False, (255, 255, 0))
             self.win.blit(g_msg6, (850+10, 460+10))
     def display_chess(self):
         for row in range(8):
