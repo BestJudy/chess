@@ -48,6 +48,7 @@ class app221_chess():
         self.turn = 1
         self.player1 = pygame.image.load(self.lst_image_names[4])
         self.player2 = pygame.image.load(self.lst_image_names[10])
+        self.player0_name = _name
         self.player1_name = _name
         self.player2_name = _name
         pygame.font.init()
@@ -348,13 +349,19 @@ class app221_chess():
             g_msg3 = self.game_font.render('Offline', False, (255, 255, 0))
         else:
             g_msg3 = self.game_font.render('Online', False, (255, 255, 0))
+            
         if(self.state_oneline != 200):
             g_msg1 = self.game_font.render(self.player1_name.split('@')[0], False, (255, 255, 255))
             self.win.blit(g_msg1, (850+10, 10+10))
             g_msg1 = self.game_font.render(self.player2_name.split('@')[0], False, (255, 255, 255))
             self.win.blit(g_msg1, (850+10, 750+10))
-            
-        self.win.blit(g_msg3, (850+10, 400+10)) 
+        g_msg5 = self.game_font.render(self.player0_name.split('@')[0], False, (255, 255, 0))
+        self.win.blit(g_msg5, (850+10, 400+10)) 
+        self.win.blit(g_msg3, (850+10, 430+10)) 
+
+        if(self.state_oneline >= 300):
+            g_msg6 = self.game_font.render('room ' + str(self.id_game), False, (255, 255, 0))
+            self.win.blit(g_msg6, (850+10, 460+10))
     def display_chess(self):
         for row in range(8):
             for col in range(len(self.lst_image_index[row])):
