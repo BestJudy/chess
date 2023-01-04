@@ -23,7 +23,7 @@ def app221Login(username, password=''):
         JSON_object = json.loads(data.decode(encoding))
         ret = int(JSON_object['param10_ret'])
     except Exception:
-        print('error')
+        print('app221Login error')
     return ret
 #ret =  app221Login('bestjudyw@gmail.com', 'zzy403')
 #print( 'app221Login', ret )
@@ -46,7 +46,7 @@ def app221GetGameData(id_game, h_player=''):
             ret_arr.shape = (8, 8)
         turn_now = int(JSON_object[0]['h_turn2'])
     except Exception:
-        print('error')
+        print('app221GetGameData error')
     return (ret_arr, turn_now)
 #arr_ret = app221GetGameData('lunawyh@gmail.com')
 #arr_ret = app221GetGameData(4)
@@ -76,7 +76,7 @@ def app221GetGameId(h_player='', _role=1):
         ret = (int(JSON_object[0]['h_id']), role, h_player_other)
         
     except Exception:
-        print('error')
+        print('app221GetGameId error')
     return ret
 def app20SaveGameData(h_house_i, _data_url):
     ret = 0
@@ -99,7 +99,7 @@ def app20SaveGameData(h_house_i, _data_url):
         # do something
         print('Reason: ', e.reason)
     except Exception:
-        print('error')
+        print('app20SaveGameData error')
     return ret, ""
 def app20SaveGame(id_game, data_game, role_cur=2):
     if(id_game <= 0): return
@@ -149,7 +149,7 @@ def app20CreateGame(p_name, role_cur=2):
     app20SaveGameData(post_dictionary, data_url)
     pass
 def app20SetUser(p_name, role_cur=2, state_cur=0):
-    #print('  app20CreateGame', p_name, role_cur)
+    print('  app20SetUser', p_name, role_cur, state_cur)
     data_dictionary = {'h_id': 0, 
                     't_updated':0, 
                     'h_name': '',
@@ -164,7 +164,7 @@ def app20SetUser(p_name, role_cur=2, state_cur=0):
     data_dictionary['h_role'] = role_cur
     data_dictionary['h_state'] = state_cur
     data_jsonString = json.dumps(data_dictionary)
-    post_dictionary = {'query_h_id':200, 'h_app_item':'data'}
+    post_dictionary = {'query_h_id':0, 'h_app_item':'data'}
     post_dictionary['h_app_item'] = data_jsonString
     data_url = 'http://cloudh.org/house_app/app221/h_app_man_user.php'
     ret, ret_json = app20SaveGameData(post_dictionary, data_url)
@@ -173,7 +173,7 @@ def app20SetUser(p_name, role_cur=2, state_cur=0):
     else:
         return 0
 def app20getPartner(id_user, role_cur=2, n_ignore=0):
-    #print('  app20CreateGame', p_name, role_cur)
+    print('  app20getPartner', id_user, role_cur, n_ignore)
     data_dictionary = {'h_id': 0, 
                     't_updated':0, 
                     'h_name': '',
@@ -189,6 +189,31 @@ def app20getPartner(id_user, role_cur=2, n_ignore=0):
     data_dictionary['h_state'] = n_ignore
     data_jsonString = json.dumps(data_dictionary)
     post_dictionary = {'query_h_id':200, 'h_app_item':'data'}
+    post_dictionary['h_app_item'] = data_jsonString
+    data_url = 'http://cloudh.org/house_app/app221/h_app_man_user.php'
+    ret, ret_json = app20SaveGameData(post_dictionary, data_url)
+    if(ret == 200):
+        return ret_json[0]['h_room'], ret_json[0]['h_name']
+    else:
+        return 0, ''
+def app20UpdateUser(id_user, name_user, role_cur, state_cur, room_cur):
+    print('  app20UpdateUser', id_user, name_user, role_cur, state_cur, room_cur)
+    data_dictionary = {'h_id': 0, 
+                    't_updated':0, 
+                    'h_name': '',
+                    'h_role': 0,
+                    'h_state': 0,
+                    'h_room': 0,
+                    'h_note': 'smart'
+                    }
+    data_dictionary['h_id'] = id_user
+    data_dictionary['t_updated'] = time.time()
+    data_dictionary['h_name'] = name_user
+    data_dictionary['h_role'] = role_cur
+    data_dictionary['h_state'] = state_cur
+    data_dictionary['h_room'] = room_cur
+    data_jsonString = json.dumps(data_dictionary)
+    post_dictionary = {'query_h_id':300, 'h_app_item':'data'}
     post_dictionary['h_app_item'] = data_jsonString
     data_url = 'http://cloudh.org/house_app/app221/h_app_man_user.php'
     ret, ret_json = app20SaveGameData(post_dictionary, data_url)

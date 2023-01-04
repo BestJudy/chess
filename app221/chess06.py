@@ -6,7 +6,7 @@
 import pygame
 import numpy as np
 import random
-from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20SetUser, app20getPartner
+from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20SetUser, app20getPartner, app20UpdateUser
 from app04_input import chess_login
 
 __version__ = '0.0.8'
@@ -50,6 +50,7 @@ class app221_chess():
         self.player2 = pygame.image.load(self.lst_image_names[11])
         self.player0_id = 0
         self.player0_ignore = 0
+        self.player0_retries = 0
         self.player0_name = _name
         self.player1_name = _name
         self.player2_name = _name
@@ -86,12 +87,12 @@ class app221_chess():
                                     self.player0_role = 1
                                     self.player0_id = app20SetUser(self.player1_name, 1, 200)
                                     self.state_oneline = 250
-                                    
+                                    self.player0_retries, self.player0_ignore = 0, 0
                                 elif(row == 6 and (col == 8 or col == 9)):
                                     self.player0_role = 2
                                     self.player0_id = app20SetUser(self.player2_name, 2, 200)
                                     self.state_oneline = 250
-                                    
+                                    self.player0_retries, self.player0_ignore = 0, 0
                             elif(self.state_oneline == 100):
                                 if(row == 4 and (col == 8 or col == 9)):
                                     # offline or online
@@ -147,14 +148,18 @@ class app221_chess():
                         x, y = pygame.mouse.get_pos()
                         if state == 2:
                             state = 3
-                        elif state == 5:
-                            a_str = ' '.join(map(str,(self.lst_image_index)))
-                            # print(b_str)
-                            app20SaveGame(self.id_room, a_str, self.player0_role )
+                        elif state == 5:                          
                             state= 0
                             if(self.state_oneline == 100):
                                 self.turn = self.player0_role = 3 - self.player0_role
                                 pass
+                            else:
+                                a_str = ' '.join(map(str,(self.lst_image_index)))
+                                # print(b_str)
+                                app20SaveGame(self.id_room, a_str, self.player0_role )
+                                self.state_oneline = 300
+                                app20UpdateUser(self.player0_id, self.player0_name, self.player0_role, 
+                                    self.state_oneline, self.id_room)
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:  # right
                     if(state >= 1):     # cancel all states, restoring to the intializing state
                         self.lst_image_index[row_selected][col_selected] = chess_selected
@@ -172,14 +177,17 @@ class app221_chess():
             self.display_side()
             self.display_chess()
             if(self.state_oneline == 250):
+                self.player0_retries += 1
                 self.id_room, parter_name = app20getPartner(self.player0_id, self.player0_role, self.player0_ignore)
                 if(self.id_room > 0):
-                    self.state_oneline = 300
+                    self.state_oneline = 260
                     if(self.player0_role == 1):
                         self.player2_name = parter_name
                     else:
                         self.player1_name = parter_name
-            
+                else:
+                    if(self.player0_retries % 100 == 0):
+                        self.player0_ignore = 1 - self.player0_ignore
             if state == 2 or state == 3:
                 self.display_rule()
             if state == 1 or state == 2 or state == 3:
@@ -333,7 +341,7 @@ class app221_chess():
     def display_side(self):
         self.win.blit(self.backround, (0, 0))
         self.win.blit(self.bk_side, (790, 0))  
-        if(self.state_oneline == 100 or self.state_oneline == 300):     
+        if(self.state_oneline == 100 or self.state_oneline >= 250):     
             if(self.turn == 1): 
                 self.win.blit(self.player1, (850+10, 50+10))   
                 g_msg2 = self.game_font.render('My Turn', False, (255, 255, 255))
@@ -365,7 +373,7 @@ class app221_chess():
         self.win.blit(g_msg5, (850+10, 400+10)) 
         self.win.blit(g_msg3, (850+10, 430+10)) 
 
-        if(self.state_oneline >= 300):
+        if(self.state_oneline >= 250):
             g_msg6 = self.game_font.render('room ' + str(self.id_room), False, (255, 255, 0))
             self.win.blit(g_msg6, (850+10, 460+10))
     def display_chess(self):
