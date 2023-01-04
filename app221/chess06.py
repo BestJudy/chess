@@ -6,10 +6,10 @@
 import pygame
 import numpy as np
 import random
-from app03_cloudh import app221Login, app221GetGameId, app20SaveGame, app221GetGameData, app20SetUser, app20getPartner, app20UpdateUser
+from app03_cloudh import app221Login, app20SaveGame, app221GetGameData, app20SetUser, app20getPartner, app20UpdateUser
 from app04_input import chess_login
 
-__version__ = '0.0.8'
+__version__ = '1.0.3'
 
 class app221_chess():
     def __init__(self, _id_game, _n_role, _name):
@@ -74,6 +74,10 @@ class app221_chess():
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    if(self.state_oneline >= 200):
+                        self.state_oneline = 100
+                        app20UpdateUser(self.player0_id, self.player0_name, self.player0_role, 
+                                    self.state_oneline, self.id_room)
                     run = False
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # LEFT
                         x, y = pygame.mouse.get_pos()
@@ -374,7 +378,7 @@ class app221_chess():
         self.win.blit(g_msg3, (850+10, 430+10)) 
 
         if(self.state_oneline >= 250):
-            g_msg6 = self.game_font.render('room ' + str(self.id_room), False, (255, 255, 0))
+            g_msg6 = self.game_font.render('in room ' + str(self.id_room), False, (255, 255, 0))
             self.win.blit(g_msg6, (850+10, 460+10))
     def display_chess(self):
         for row in range(8):
