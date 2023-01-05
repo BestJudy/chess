@@ -89,19 +89,25 @@ class app221_chess():
                                 #print('online select', col, row)
                                 if(row == 1 and (col == 8 or col == 9)):
                                     self.player0_role = 1
-                                    self.player0_id = app20SetUser(self.player1_name, 1, 200)
                                     self.state_oneline = 250
+                                    self.player0_id = app20SetUser(self.player1_name, 1, self.state_oneline)
                                     self.player0_retries, self.player0_ignore = 0, 0
                                 elif(row == 6 and (col == 8 or col == 9)):
                                     self.player0_role = 2
-                                    self.player0_id = app20SetUser(self.player2_name, 2, 200)
                                     self.state_oneline = 250
+                                    self.player0_id = app20SetUser(self.player2_name, 2, self.state_oneline)
                                     self.player0_retries, self.player0_ignore = 0, 0
                             elif(self.state_oneline == 100):
                                 if(row == 4 and (col == 8 or col == 9)):
                                     # offline or online
                                     self.state_oneline = 200    # online
+                                    app20SetUser(self.player0_name, 0, self.state_oneline)
                                     self.player0_role, self.turn = 0, 0
+                            elif(self.state_oneline == 260):
+                                if(row == 1 and (col == 8 or col == 9)):
+                                    self.state_oneline = 300
+                                elif(row == 6 and (col == 8 or col == 9)):
+                                    self.state_oneline = 300
                         elif state == 0:
                             b_legal = False
                             a_chess = self.lst_image_index[row][col]
@@ -168,30 +174,37 @@ class app221_chess():
                     if(state >= 1):     # cancel all states, restoring to the intializing state
                         self.lst_image_index[row_selected][col_selected] = chess_selected
                         state = 0
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                    
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:                    
                     self.lst_image_index = np.array(self.default_index)
                     a_str = ' '.join(map(str,(self.lst_image_index)))
                     app20SaveGame(self.id_room, a_str )
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_l:
-                    
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_l:                    
                     self.state_oneline = 200    # online
                     self.player0_role, self.turn = 0, 0
-
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_x:
+                    if(self.state_oneline > 200):
+                        self.state_oneline = 200    # online
+                        self.player0_role, self.id_room = 0, 0
+                        app20SetUser(self.player0_name, 0, self.state_oneline)
+                        self.player1_name = self.player0_name
+                        self.player2_name = self.player0_name
+                    pass
             self.display_side()
             self.display_chess()
-            if(self.state_oneline == 250):
+            if(self.state_oneline == 250 or self.state_oneline == 260):
                 self.player0_retries += 1
                 self.id_room, parter_name = app20getPartner(self.player0_id, self.player0_role, self.player0_ignore)
+                pygame.time.delay(2000)
                 if(self.id_room > 0):
                     self.state_oneline = 260
                     if(self.player0_role == 1):
                         self.player2_name = parter_name
                     else:
                         self.player1_name = parter_name
-                else:
-                    if(self.player0_retries % 100 == 0):
-                        self.player0_ignore = 1 - self.player0_ignore
+                if(self.player0_retries % 3 == 0):
+                        self.player0_ignore += 1
+                        if(self.player0_ignore >= 5):
+                            self.player0_ignore = 0
             if state == 2 or state == 3:
                 self.display_rule()
             if state == 1 or state == 2 or state == 3:
@@ -238,7 +251,7 @@ class app221_chess():
         WHITE = (255,255,255)
         # white rook 
         if piece == 1 or piece == 7:
-            print('piece', piece, col_selected, row_selected)
+            #print('piece', piece, col_selected, row_selected)
             for i in range(8):
                 self.position_okay[row_selected][i] = 1
                 self.position_okay[i][col_selected] = 1
@@ -345,7 +358,7 @@ class app221_chess():
     def display_side(self):
         self.win.blit(self.backround, (0, 0))
         self.win.blit(self.bk_side, (790, 0))  
-        if(self.state_oneline == 100 or self.state_oneline >= 250):     
+        if(self.state_oneline == 100 or self.state_oneline >= 300):     
             if(self.turn == 1): 
                 self.win.blit(self.player1, (850+10, 50+10))   
                 g_msg2 = self.game_font.render('My Turn', False, (255, 255, 255))
@@ -362,7 +375,16 @@ class app221_chess():
             self.win.blit(self.player2, (850+10, 650+10))
             g_msg2 = self.game_font.render('I select white', False, (255, 0, 0))
             self.win.blit(g_msg2, (820+10, 600+10))
-            
+        elif(self.state_oneline == 260):
+            if(self.player0_role == 1): 
+                self.win.blit(self.player1, (850+10, 50+10))   
+                g_msg2 = self.game_font.render('Play', False, (255, 255, 255))
+                self.win.blit(g_msg2, (850+10, 150+10)) 
+            elif(self.player0_role == 2):     
+                self.win.blit(self.player2, (850+10, 650+10))
+                g_msg2 = self.game_font.render('Play', False, (255, 255, 255))
+                self.win.blit(g_msg2, (850+10, 600+10))
+            pass
         if(self.state_oneline <= 100):
             g_msg3 = self.game_font.render('Offline', False, (255, 255, 0))
         else:
