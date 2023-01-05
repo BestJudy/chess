@@ -64,7 +64,7 @@ def app20SaveGameData(h_house_i, _data_url):
         #print(data_out)
         encoding = webURL.info().get_content_charset('utf-8')
         JSON_object = json.loads(data_out.decode(encoding))
-        print('app20SaveGameData', JSON_object)
+        #print('app20SaveGameData', JSON_object)
         return 200, JSON_object
     except HTTPError as e:
         # do something

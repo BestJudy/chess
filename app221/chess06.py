@@ -2,6 +2,8 @@
 #       chess06.py
 #
 #   https://github.com/BestJudy/chess
+#     git reset --hard
+#     git pull
 ############################################
 import pygame
 import numpy as np
