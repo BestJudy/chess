@@ -205,7 +205,7 @@ class app221_chess():
                         self.player1_name = parter_name
                 if(self.player0_retries % 3 == 0):
                         self.player0_ignore += 1
-                        if(self.player0_ignore >= 5):
+                        if(self.player0_ignore >= 3):
                             self.player0_ignore = 0
             if state == 2 or state == 3:
                 self.display_rule()
