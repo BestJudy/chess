@@ -148,19 +148,17 @@ class app221_chess():
                             state = 2
                             chess_selected = self.lst_image_index[row_selected][col_selected]
                             self.lst_image_index[row_selected][col_selected] = 0
-                            self.position_okay = self.rule.getLegal(chess_selected, col_selected, row_selected)
+                            self.position_okay = self.rule.getLegal(chess_selected, col_selected, row_selected, self.lst_image_index)
                         elif state == 4:
                             state = 5
                             print('eat', self.lst_image_index[row][col])
                             if self.lst_image_index[row][col] == 11:
                                 self.winner = 800
-                                print('won')
+                                print('black won')
                             if self.lst_image_index[row][col] == 5:
                                 self.winner = 850
-                                print('won')
-                          
-                            else:
-                                pass
+                                print('white won')
+                        
                             self.lst_image_index[row][col] = chess_selected
                             #if self.position_okay[row][col] == 1:
                                 #self.lst_image_index[row][col] = chess_selected
