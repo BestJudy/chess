@@ -60,6 +60,7 @@ class app221_chess():
         pygame.font.init()
         self.game_font = pygame.font.SysFont('Comic Sans MS', 30)
         self.rule = chess_rule()
+        self.winner = 0
         pass
     def run(self):
         state = 0
@@ -150,6 +151,16 @@ class app221_chess():
                             self.position_okay = self.rule.getLegal(chess_selected, col_selected, row_selected)
                         elif state == 4:
                             state = 5
+                            print('eat', self.lst_image_index[row][col])
+                            if self.lst_image_index[row][col] == 11:
+                                self.winner = 800
+                                print('won')
+                            if self.lst_image_index[row][col] == 5:
+                                self.winner = 850
+                                print('won')
+                          
+                            else:
+                                pass
                             self.lst_image_index[row][col] = chess_selected
                             #if self.position_okay[row][col] == 1:
                                 #self.lst_image_index[row][col] = chess_selected
@@ -295,6 +306,12 @@ class app221_chess():
         if(self.state_oneline >= 250):
             g_msg6 = self.game_font.render('in room ' + str(self.id_room), False, (255, 255, 0))
             self.win.blit(g_msg6, (850+10, 460+10))
+        if self.winner == 800:
+            won = self.game_font.render('Black Wins!!!', True, (255, 255, 255))
+            self.win.blit(won, (850+10, 260+10)) 
+        if self.winner == 850:
+            won = self.game_font.render('White Wins!!!', True, (255, 255, 255))
+            self.win.blit(won, (850+10, 260+10)) 
     def display_chess(self):
         for row in range(8):
             for col in range(len(self.lst_image_index[row])):
