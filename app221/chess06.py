@@ -10,6 +10,7 @@ import numpy as np
 import random
 from app03_cloudh import app221Login, app20SaveGame, app221GetGameData, app20SetUser, app20getPartner, app20UpdateUser
 from app04_input import chess_login
+from chess_rule import chess_rule
 
 __version__ = '1.0.3'
 
@@ -58,7 +59,7 @@ class app221_chess():
         self.player2_name = _name
         pygame.font.init()
         self.game_font = pygame.font.SysFont('Comic Sans MS', 30)
-        
+        self.rule = chess_rule()
         pass
     def run(self):
         state = 0
@@ -146,7 +147,7 @@ class app221_chess():
                             state = 2
                             chess_selected = self.lst_image_index[row_selected][col_selected]
                             self.lst_image_index[row_selected][col_selected] = 0
-                            self.chess_rule(chess_selected, col_selected, row_selected)
+                            self.position_okay = self.rule.getLegal(chess_selected, col_selected, row_selected)
                         elif state == 4:
                             state = 5
                             self.lst_image_index[row][col] = chess_selected
@@ -247,116 +248,6 @@ class app221_chess():
         
         self.position_okay[row][col] = 1
         #print(self.position_okay)
-    def chess_rule(self, piece, col_selected, row_selected):
-        self.position_okay = np.zeros((8, 8))
-        #self.lst_image_index
-        WHITE = (255,255,255)
-        # white rook 
-        if piece == 1 or piece == 7:
-            #print('piece', piece, col_selected, row_selected)
-            for i in range(8):
-                self.position_okay[row_selected][i] = 1
-                self.position_okay[i][col_selected] = 1
-            self.position_okay[row_selected][col_selected] = 0
-        # white knight
-        if piece == 2 or piece == 8:
-            for i in range(1,3):
-                a_row, a_col = row_selected+i, col_selected+(3-i)
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected-(3-i)
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+i, col_selected-(3-i)
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected+(3-i)
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-            self.position_okay[row_selected][col_selected] = 0
-        # white bishop
-        if piece == 3 or piece == 9:
-            for i in range(8):
-                a_row, a_col = row_selected+i, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+i, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-            self.position_okay[row_selected][col_selected] = 0
-            
-        # white queen
-        if piece == 4 or piece == 10:
-            #pygame.draw.circle(self.win, WHITE , ((col_selected) *100+50, (row_selected) * 100+50), 20)
-            for i in range(0, 8):
-                self.position_okay[row_selected][i] = 1
-                self.position_okay[i][col_selected] = 1
-                a_row, a_col = row_selected+i, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+i, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-            self.position_okay[row_selected][col_selected] = 0
-
-        # white king
-        if piece == 5 or piece == 11:
-            for i in range(1, 2):
-                a_row, a_col = row_selected+i, col_selected+0
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected+0
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+0, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+0, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+i, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+i, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected+i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-i, col_selected-i
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-            self.position_okay[row_selected][col_selected] = 0
-        # white pawn
-        if piece == 12:
-            if True:
-                a_row, a_col = row_selected-1, col_selected
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected-2, col_selected
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-        # black pawn
-        if piece == 6:
-            if True:
-                a_row, a_col = row_selected+1, col_selected
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
-                a_row, a_col = row_selected+2, col_selected
-                if(a_row <= 7 and a_row >= 0 and a_col <= 7 and a_col >= 0):
-                    self.position_okay[a_row][a_col] = 1
     def display_side(self):
         self.win.blit(self.backround, (0, 0))
         self.win.blit(self.bk_side, (790, 0))  
